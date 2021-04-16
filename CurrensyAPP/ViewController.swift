@@ -7,8 +7,11 @@
 
 import UIKit
 import SnapKit
+import SDWebImage
+import SafariServices
 
-class ViewController: UIViewController, UITableViewDataSource {
+
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     var apiClient: ApiClient = ApiClient()
     let picker = UIPickerView()
@@ -25,10 +28,6 @@ class ViewController: UIViewController, UITableViewDataSource {
         apiClient.fetchSomeMoney()
         apiClient.fetchNews(lang: "ru")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { self.initialize(); self.news = self.apiClient.newsData} // Delay for API
-        tableView.register(NewsTableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-        picker.dataSource = self
-        picker.delegate = self
-        textField1.delegate = self
         }
     
     // Converter Core
@@ -57,19 +56,28 @@ class ViewController: UIViewController, UITableViewDataSource {
         }
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+     //   let link = self.news[indexPath.row].url
+        tableView.deselectRow(at: indexPath, animated: false)
+        print("yoyoy")
+        if let url = URL(string: self.news[indexPath.row].url) {
+            let safariController = SFSafariViewController(url: url)
+            present(safariController, animated: true, completion: nil)
+       //  tableView.deselectRow(at: indexPath, animated: false)
+     }
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! NewsTableViewCell
         cell.layer.cornerRadius = 20
         cell.layer.masksToBounds = true
         cell.layer.borderWidth = 0.2
         cell.layer.masksToBounds = true
-        cell.newsImage.image = UIImage(named: "bbc")?.roundedImage
+        cell.newsImage.sd_setImage(with: URL(string: self.news[indexPath.row].urlToImage ?? ""))
         cell.titleLabel.text = self.news[indexPath.row].title
         cell.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.1)
            return cell
     }
 
-    
     // Set Constrains
     private func initialize() {
         resultLabel.text = "I'll Get"
@@ -82,7 +90,11 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         tableView.backgroundColor = UIColor(red: 88/255, green: 88/255, blue: 90/255, alpha: 1)
         tableView.register(NewsTableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-        self.tableView.dataSource = self
+        tableView.dataSource = self
+        tableView.delegate = self
+        self.picker.dataSource = self
+        self.picker.delegate = self
+        self.textField1.delegate = self
         
         picker.translatesAutoresizingMaskIntoConstraints = false
         resultLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -124,6 +136,8 @@ class ViewController: UIViewController, UITableViewDataSource {
     // Close Keyboard on Tap
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
         view.addGestureRecognizer(tap)
+        tap.cancelsTouchesInView = false
         }
+        
     }
 

@@ -97,7 +97,7 @@ class ApiClient {
                     //    print("model has \(models)")
                        }
                     self.newsData = models
-                    print("source is" + self.newsData[0].title)
+                    print("source is" + self.newsData[0].url)
                    case .failure(let error):
                        print(error)
                    }
