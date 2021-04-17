@@ -7,10 +7,6 @@
 
 import Foundation
 
-struct Source {
-    let sourceName: String
-}
-
 struct News {
     let title: String
     let description: String?

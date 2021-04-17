@@ -94,7 +94,6 @@ class ApiClient {
                                             url: item["url"].stringValue,
                                             urlToImage: item["urlToImage"].stringValue)
                            models.append(model)
-                    //    print("model has \(models)")
                        }
                     self.newsData = models
                     print("source is" + self.newsData[0].url)

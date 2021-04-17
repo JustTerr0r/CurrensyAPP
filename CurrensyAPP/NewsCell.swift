@@ -14,7 +14,7 @@ class NewsTableViewCell: UITableViewCell {
     let titleLabel : UILabel = {
         let lbl = UILabel ()
         lbl.textColor = .black
-        lbl.font = UIFont.systemFont(ofSize: 17)
+        lbl.font = UIFont.boldSystemFont(ofSize: 16)
         lbl.textAlignment = .left
         lbl.numberOfLines = 0
         lbl.adjustsFontSizeToFitWidth = false

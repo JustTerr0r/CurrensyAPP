@@ -13,6 +13,10 @@ import SafariServices
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
+    let calcBack = UIImage(named: "calcBack")
+    let pickerBack = UIImage(named: "pickerBack")
+    let textFieldBack = UIImage(named: "textFieldBack")
+    
     var apiClient: ApiClient = ApiClient()
     let picker = UIPickerView()
     var textField1 : UITextField = UITextField (frame: CGRect(x: 20, y: 100, width: 300, height: 35))
@@ -49,22 +53,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if apiClient.newsData.isEmpty == false {
             return apiClient.newsData.count
-        }
-        else {
+        } else {
             print ("News data is missing")
             return 0
         }
     }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-     //   let link = self.news[indexPath.row].url
+        let link = self.news[indexPath.row].url
         tableView.deselectRow(at: indexPath, animated: false)
-        print("yoyoy")
-        if let url = URL(string: self.news[indexPath.row].url) {
+        if let url = URL(string: link) {
             let safariController = SFSafariViewController(url: url)
             present(safariController, animated: true, completion: nil)
-       //  tableView.deselectRow(at: indexPath, animated: false)
-     }
+        }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! NewsTableViewCell
@@ -74,7 +74,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.layer.masksToBounds = true
         cell.newsImage.sd_setImage(with: URL(string: self.news[indexPath.row].urlToImage ?? ""))
         cell.titleLabel.text = self.news[indexPath.row].title
-        cell.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.1)
+        cell.backgroundColor = UIColor(red: 141/255, green: 151/255, blue: 170/255, alpha: 0.45)
            return cell
     }
 
@@ -85,7 +85,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         textField1.placeholder = "I Have"
         textField1.font = UIFont.systemFont(ofSize: 17)
-        textField1.backgroundColor = UIColor(red: 140/255, green: 151/255, blue: 170/255, alpha: 1)
+        textField1.backgroundColor = UIColor(red: 158/255, green: 167/255, blue: 183/255, alpha: 1)
         textField1.keyboardType = UIKeyboardType.numberPad
         
         tableView.backgroundColor = UIColor(red: 88/255, green: 88/255, blue: 90/255, alpha: 1)
@@ -104,27 +104,49 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (maker) in
             maker.bottom.equalTo(view.snp.bottom)
-            maker.top.equalTo(view.snp.bottom).inset(300)
+            maker.height.equalToSuperview().multipliedBy(0.35)
             maker.width.equalTo(view.snp.width).multipliedBy(1)
+        }
+        
+        let calcBack = UIImageView(image: self.calcBack)
+        view.addSubview(calcBack)
+        calcBack.snp.makeConstraints { (maker) in
+            maker.top.left.right.equalToSuperview()
+            maker.width.equalToSuperview().multipliedBy(1)
+            maker.height.equalToSuperview().multipliedBy(1)
+          //  maker.bottom.lessThanOrEqualToSuperview()
+        }
+        
+        let pickerBack = UIImageView(image: self.pickerBack)
+        calcBack.addSubview(pickerBack)
+        pickerBack.snp.makeConstraints { (maker) in
+            maker.width.equalToSuperview()
+            maker.height.equalTo(calcBack).multipliedBy(0.3)
+            maker.top.equalTo(calcBack).inset(100)
         }
         
         view.addSubview(picker)
         picker.snp.makeConstraints { (maker) in
-            maker.width.equalTo(view.snp.width).multipliedBy(1)
-            maker.top.equalTo(view.snp.top).offset(150)
+            maker.edges.equalTo(pickerBack)
+        }
+        
+        let textFieldBack = UIImageView(image: self.textFieldBack)
+        calcBack.addSubview(textFieldBack)
+        textFieldBack.snp.makeConstraints { (maker) in
+            maker.center.width.equalToSuperview()
+            maker.height.equalToSuperview().multipliedBy(0.07)
         }
         view.addSubview(textField1)
         textField1.snp.makeConstraints { (maker) in
-            maker.top.equalTo(picker.snp.bottom).offset(50).priority(1000)
-            maker.left.lessThanOrEqualTo(view.snp.left).inset(40).priority(1000)
+            maker.top.equalTo(textFieldBack.snp.top).inset(15)
+            maker.left.equalTo(textFieldBack.snp.left).inset(20)
             maker.width.equalTo(100).priority(1000)
         }
         
         view.addSubview(resultLabel)
         resultLabel.snp.makeConstraints { (maker) in
-            maker.right.equalTo(view.snp.right).inset(40)
-            maker.top.equalTo(picker.snp.bottom).offset(50)
-            maker.bottom.lessThanOrEqualTo(view.snp.bottom).inset(430)
+            maker.top.equalTo(textFieldBack.snp.top).inset(15)
+            maker.right.equalTo(textFieldBack.snp.right).inset(20)
         }
         
     // "No-Button" Calculate
